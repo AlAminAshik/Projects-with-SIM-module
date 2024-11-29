@@ -1,0 +1,3 @@
+The GSM shield turns off automatically if the power supply is not properly supplied.
+It also requires a very good connection between its contacts and the power supply.
+A Li-ion battery can be used to supply power.
