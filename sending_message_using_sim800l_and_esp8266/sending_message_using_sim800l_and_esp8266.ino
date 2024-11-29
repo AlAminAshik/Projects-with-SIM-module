@@ -22,14 +22,14 @@ void setup()
 
 void loop()
 {
-  if(digitalRead(14) == LOW){
-    mySerial.println("AT+CMGF=1"); // Configuring TEXT mode
+  if(digitalRead(14) == LOW){       //if the button is pressed once
+    mySerial.println("AT+CMGF=1");  // Configuring TEXT mode
     updateSerial();
     mySerial.println("AT+CMGS=\"+8801849472106\"");//change ZZ with country code and xxxxxxxxxxx with phone number to sms
     updateSerial();
     mySerial.print("Last Minute Engineers | lastminuteengineers.com"); //text content
     updateSerial();
-    mySerial.write(26);
+    mySerial.write(26);   //size of the message
     delay(5000);
   }
 }
