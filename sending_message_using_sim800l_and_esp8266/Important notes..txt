@@ -1,0 +1,6 @@
+> it requires a lot of power to connect successfully to GSM. Thus power it possibly using a lithium battery. working range 3.4V to 4.4V
+
+> it sets the baud rate automatically. to reset, pull_down the "reset" pin for 100ms.
+after uploading the code, the sim module will automatically detect the baud rate and set it as the default.
+
+> 115200 baud rate is not always suitable for this module.
