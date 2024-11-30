@@ -1,15 +1,12 @@
-// #include <EspSoftwareSerial>
-
+//emergency flood contact system using esp32, sim800l and moisture sensor
 // Hardware Serial 2 pins
 #define RXD2 16
 #define TXD2 17
 
 #define text_button 4
-#define SOS_button 2
+#define SOS_button 22
 #define SOS_led 23
-
-// // Create a SoftwareSerial object
-// SoftwareSerial Serial2(TX_PIN, RX_PIN);
+#define moisture_sense 15
 
 void setup()
 {
@@ -21,6 +18,7 @@ void setup()
   pinMode(text_button, INPUT_PULLUP);
   pinMode(SOS_button, INPUT_PULLUP);
   pinMode(SOS_led, OUTPUT);
+  pinMode(moisture_sense, INPUT);
 
   Serial2.println("AT"); //Once the handshake test is successful, it will back to OK
   updateSerial();
@@ -28,21 +26,21 @@ void setup()
 
 void loop()
 {
-  if(digitalRead(text_button) == LOW){       //if the button is pressed once
-    mySerial.println("AT+CMGF=1");  // Configuring TEXT mode
+  if(digitalRead(text_button) == LOW || analogRead(moisture_sense) < 2000){       //if the button is pressed once
+    Serial2.println("AT+CMGF=1");  // Configuring TEXT mode
     updateSerial();
-    mySerial.println("AT+CMGS=\"+8801849472106\"");//change ZZ with country code and xxxxxxxxxxx with phone number to sms
+    Serial2.println("AT+CMGS=\"+8801849472106\"");//change ZZ with country code and xxxxxxxxxxx with phone number to sms
     updateSerial();
-    mySerial.print("I am in danger, please send help. Location:......."); //text content
+    Serial2.print("I am in danger, please send help. Location:......."); //text content
     updateSerial();
-    mySerial.write(26);   //size of the message
+    Serial2.write(26);   //size of the message
     delay(5000);
   }
 
   while(digitalRead(SOS_button) == LOW){
-    digitalWrite(SOS_led) = HIGH;
+    digitalWrite(SOS_led, HIGH);
     delay(300);
-    digitalWrite(SOS_led) = LOW;
+    digitalWrite(SOS_led, LOW);
     delay(300);
   }
 }
