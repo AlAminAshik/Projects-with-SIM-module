@@ -7,26 +7,27 @@
 #define SOS_button 22
 #define SOS_led 23
 #define moisture_sense 15
+int moisture_val = 0;
 
 void setup()
 {
-  //Begin serial communication with nodemcu (Serial Monitor)
-  Serial.begin(9600);
-  //Begin serial communication with Arduino and SIM800L (D16 RX2 and D17 TX2)
-  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  Serial.begin(9600);     //Begin serial communication with nodemcu (Serial Monitor)
+  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);    //Begin serial communication with Arduino and SIM800L (D16 RX2 and D17 TX2)
 
   pinMode(text_button, INPUT_PULLUP);
   pinMode(SOS_button, INPUT_PULLUP);
   pinMode(SOS_led, OUTPUT);
   pinMode(moisture_sense, INPUT);
 
-  Serial2.println("AT"); //Once the handshake test is successful, it will back to OK
+  Serial2.println("AT"); //imp Once the handshake test is successful, it will back to OK
   updateSerial();
 }
 
-void loop()
-{
-  if(digitalRead(text_button) == LOW || analogRead(moisture_sense) < 2000){       //if the button is pressed once
+void loop(){
+  moisture_val = analogRead(moisture_sense);
+  Serial.println(moisture_val);
+
+  if(digitalRead(text_button) == LOW || (moisture_val < 2000)){       //if the button is pressed once
     Serial2.println("AT+CMGF=1");  // Configuring TEXT mode
     updateSerial();
     Serial2.println("AT+CMGS=\"+8801849472106\"");//change ZZ with country code and xxxxxxxxxxx with phone number to sms
@@ -45,15 +46,12 @@ void loop()
   }
 }
 
-void updateSerial()
-{
+void updateSerial(){
   delay(500);
-  while (Serial.available()) 
-  {
+  while (Serial.available()) {
     Serial2.write(Serial.read());//Forward what Serial received to hardware Serial Port
   }
-  while(Serial2.available()) 
-  {
+  while(Serial2.available()) {
     Serial.write(Serial2.read());//Forward what hardware Serial received to Serial Port
   }
 }
